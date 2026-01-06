@@ -1,0 +1,8 @@
+services:
+  mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: hyperstack-mcp-server:latest
+    container_name: hyperstack-mcp-server
+    restart: unless-stopped
