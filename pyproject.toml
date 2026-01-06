@@ -1,0 +1,279 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hyperstack-mcp-server"
+version = "0.1.0"
+description = "MCP server for managing Hyperstack infrastructure through natural language"
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "MIT"}
+authors = [
+    {name = "Hyperstack Team", email = "support@hyperstack.cloud"}
+]
+keywords = ["mcp", "hyperstack", "infrastructure", "api", "asyncio"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+
+dependencies = [
+    "fastmcp>=0.1.0",
+    "uvicorn[standard]>=0.30.0",
+    "aiohttp>=3.9.0",
+    "pydantic>=2.5.0",
+    "pydantic-settings>=2.1.0",
+    "python-dotenv>=1.0.0",
+    "asyncio-throttle>=1.0.2",
+    "aioretry>=5.0.2",
+    "structlog>=24.0.0",
+    "rich>=13.7.0",
+    "orjson>=3.9.0",
+    "python-dateutil>=2.8.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    # Testing
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+    "pytest-mock>=3.11.0",
+    "aioresponses>=0.7.6",
+    # Code quality
+    "black>=24.1.0",
+    "ruff>=0.8.0",
+    "mypy>=1.8.0",
+    "pre-commit>=3.6.0",
+    # Type stubs
+    "types-aiofiles>=23.2.0",
+    "types-python-dateutil>=2.8.19",
+    # Documentation
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.5.0",
+    # Development tools
+    "ipython>=8.18.0",
+    "ipdb>=0.13.13",
+]
+
+[project.urls]
+Homepage = "https://github.com/hyperstack/hyperstack-mcp-server"
+"Bug Reports" = "https://github.com/hyperstack/hyperstack-mcp-server/issues"
+Source = "https://github.com/hyperstack/hyperstack-mcp-server"
+
+[project.scripts]
+hyperstack-mcp = "server:app"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# ============================================================================
+# Code Formatting
+# ============================================================================
+
+[tool.black]
+line-length = 88
+target-version = ['py312']
+include = '\.pyi?$'
+
+# ============================================================================
+# Linting with Ruff
+# ============================================================================
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+exclude = [
+    ".git",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".venv",
+    "venv",
+    "__pycache__",
+    "build",
+    "dist",
+]
+
+[tool.ruff.lint]
+select = [
+    # Core rules
+    "E",     # pycodestyle errors
+    "W",     # pycodestyle warnings
+    "F",     # pyflakes
+    "I",     # isort
+    "N",     # pep8-naming
+    "UP",    # pyupgrade
+
+    # Code quality
+    "B",     # flake8-bugbear
+    "C4",    # flake8-comprehensions
+    "SIM",   # flake8-simplify
+    "TCH",   # flake8-type-checking
+    "ARG",   # flake8-unused-arguments
+    "PTH",   # flake8-use-pathlib
+    "PERF",  # Perflint
+
+    # Error handling
+    "BLE",   # flake8-blind-except
+    "TRY",   # tryceratops
+    "RSE",   # flake8-raise
+    "RET",   # flake8-return
+
+    # Security
+    "S",     # flake8-bandit
+
+    # Async
+    "ASYNC", # flake8-async
+
+    # Testing
+    "PT",    # flake8-pytest-style
+
+    # Documentation
+    "D",     # pydocstyle
+    "TD",    # flake8-todos
+
+    # Type annotations
+    "ANN",   # flake8-annotations
+    "PYI",   # flake8-pyi
+
+    # Ruff-specific
+    "RUF",   # Ruff-specific rules
+    "PL",    # Pylint
+]
+
+ignore = [
+    # Conflicts with formatter
+    "E203",  # Whitespace before ':'
+    "COM812", # Missing trailing comma
+    "ISC001", # Implicit string concatenation
+    "E501",  # Line too long (handled by black)
+
+    # Documentation (too strict for now)
+    "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107",
+    "D203",  # 1 blank line required before class docstring
+    "D213",  # Multi-line docstring summary should start at the second line
+
+    # Type annotations
+    "ANN401", # Dynamically typed expressions (typing.Any) are disallowed
+
+    # Testing
+    "S101",  # Use of assert detected
+
+    # Server-specific
+    "S104",  # Possible binding to all interfaces (0.0.0.0)
+
+    # TODOs
+    "TD002", # Missing author in TODO
+    "TD003", # Missing issue link on the line following TODO
+
+    # Function signatures
+    "FBT001", # Boolean positional arg in function definition
+    "FBT002", # Boolean default value in function definition
+    "PLR0913", # Too many arguments to function call
+
+    # Error messages
+    "TRY003", # Long exception messages are ok
+    "EM101", # Raw strings in exceptions are ok
+    "EM102", # f-strings in exceptions are ok
+    "G004",  # f-strings in logging are ok
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "D104"]
+"tests/*" = ["S101", "D", "ARG001", "PLR2004"]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+force-sort-within-sections = true
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.pylint]
+max-args = 8
+max-branches = 12
+max-returns = 6
+max-statements = 50
+
+# ============================================================================
+# Type Checking
+# ============================================================================
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = true
+disallow_untyped_decorators = false
+no_implicit_optional = true
+strict_optional = true
+namespace_packages = true
+explicit_package_bases = true
+pretty = true
+show_error_context = true
+show_column_numbers = true
+show_error_codes = true
+
+# Exclude src directory from strict checks
+[[tool.mypy.overrides]]
+module = "src.*"
+ignore_errors = true
+
+# Exclude tests from type checking
+[[tool.mypy.overrides]]
+module = "tests.*"
+ignore_errors = true
+
+# Ignore missing imports for third-party libraries without stubs
+[[tool.mypy.overrides]]
+module = [
+    "fastmcp",
+    "fastmcp.*",
+    "aioretry",
+    "aioretry.*",
+    "asyncio_throttle",
+    "asyncio_throttle.*",
+    "structlog",
+    "structlog.*",
+    "aioresponses",
+    "aioresponses.*",
+]
+ignore_missing_imports = true
+
+# ============================================================================
+# Testing
+# ============================================================================
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short --strict-markers"
+markers = [
+    "slow: Slow tests",
+]
+asyncio_mode = "auto"
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["*/tests/*", "*/__init__.py"]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_covered = false

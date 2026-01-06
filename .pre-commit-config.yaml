@@ -1,0 +1,58 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-added-large-files
+        args: ['--maxkb=1000']
+      - id: check-merge-conflict
+      - id: check-toml
+      - id: debug-statements
+      - id: detect-private-key
+      - id: mixed-line-ending
+        args: ['--fix=lf']
+      - id: name-tests-test
+        args: ['--pytest-test-first']
+
+  # Ruff for linting and import sorting (replaces isort and flake8)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.0
+    hooks:
+      # Run ruff linter
+      - id: ruff
+        args: ["--fix", "--exit-non-zero-on-fix"]
+        files: ^src/
+
+  # Black for code formatting (runs after ruff)
+  - repo: https://github.com/psf/black
+    rev: 24.1.0
+    hooks:
+      - id: black
+        args: ["--line-length", "88"]
+        language_version: python3.12
+        files: ^src/
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.8.0
+    hooks:
+      - id: mypy
+        args: ["--strict", "--ignore-missing-imports", "--python-version", "3.12", "src/"]
+        additional_dependencies:
+          - types-aiofiles
+          - types-python-dateutil
+          - pydantic>=2.5.0
+        files: ^src/
+        pass_filenames: false
+
+  - repo: https://github.com/pycqa/bandit
+    rev: 1.7.6
+    hooks:
+      - id: bandit
+        args: ["-ll"]
+        files: ^src/
+
+default_language_version:
+  python: python3.12
