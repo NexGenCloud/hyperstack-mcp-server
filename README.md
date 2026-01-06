@@ -362,7 +362,7 @@ hyperstack-mcp-server/
 
 ## License
 
-MIT License - see LICENSE file for details
+MIT License - see [LICENSE](./LICENSE.txt) file for details
 
 ## Support
 
