@@ -2,8 +2,9 @@
 
 from typing import Any
 
-from src.handlers.base import BaseHandler
 from src.mcp_instance import mcp
+
+from .base import BaseHandler
 
 handler = BaseHandler()
 

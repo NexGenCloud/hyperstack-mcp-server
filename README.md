@@ -6,7 +6,6 @@ A Model Context Protocol (MCP) server for managing Hyperstack infrastructure thr
 
 - **Virtual Machine Management**: Create, manage, and monitor VMs
 - **Volume Management**: Handle storage volumes and attachments
-- **Floating IP Management**: Allocate and manage public IP addresses
 - **Cluster Management**: Deploy and manage Kubernetes clusters
 - **Billing & Usage**: Track costs and resource usage
 - **Metadata Services**: Query available flavors, environments, and stock
@@ -206,14 +205,6 @@ The server exposes 44 MCP tools across 6 categories:
 - `list_volume_types`: List available volume types
 - `update_volume_attachment`: Update volume attachment properties
 
-#### Floating IPs (6 tools)
-- `allocate_floating_ip`: Allocate a new floating IP
-- `list_floating_ips`: List all floating IPs
-- `get_floating_ip`: Get floating IP details
-- `associate_floating_ip`: Associate IP with VM
-- `disassociate_floating_ip`: Disassociate IP from VM
-- `release_floating_ip`: Release a floating IP
-
 #### Clusters (5 tools)
 - `create_cluster`: Create a new cluster
 - `list_clusters`: List all clusters
@@ -337,7 +328,6 @@ hyperstack-mcp-server/
 │   ├── handlers/           # MCP action handlers
 │   │   ├── virtual_machines.py
 │   │   ├── volumes.py
-│   │   ├── floating_ips.py
 │   │   ├── clusters.py
 │   │   ├── billing.py
 │   │   └── metadata.py

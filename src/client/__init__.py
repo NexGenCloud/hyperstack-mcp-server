@@ -1,7 +1,7 @@
 """HTTP client package for Hyperstack API."""
 
-from client.base import BaseAsyncClient
-from client.hyperstack import HyperstackClient, get_client, initialize_client
+from .base import BaseAsyncClient
+from .hyperstack import HyperstackClient, get_client, initialize_client
 
 __all__ = [
     "BaseAsyncClient",
