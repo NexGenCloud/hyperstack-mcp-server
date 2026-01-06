@@ -367,5 +367,5 @@ MIT License - see LICENSE file for details
 ## Support
 
 For issues and questions:
-- GitHub Issues: [github.com/hyperstack/hyperstack-mcp-server/issues](https://github.com/hyperstack/hyperstack-mcp-server/issues)
+- GitHub Issues: [github.com/NexGenCloud/hyperstack-mcp-server/issues](https://github.com/NexGenCloud/hyperstack-mcp-server/issues)
 - Documentation: [docs.hyperstack.cloud](https://docs.hyperstack.cloud)
