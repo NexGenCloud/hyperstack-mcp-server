@@ -12,6 +12,7 @@ import structlog
 
 from src.config import settings
 from src.exceptions import APIError, RateLimitError, RequestTimeoutError
+from src.utils.request_utils import normalize_query_params
 
 logger = structlog.get_logger()
 
@@ -214,7 +215,7 @@ class BaseAsyncClient:
         self, response: aiohttp.ClientResponse
     ) -> dict[str, Any]:
         """Handle HTTP response."""
-        response.raise_for_status()
+        # response.raise_for_status()
 
         # Handle empty responses
         if response.status == HTTP_NO_CONTENT:
@@ -245,6 +246,8 @@ class BaseAsyncClient:
         **kwargs: Any,
     ) -> dict[str, Any]:
         """Execute GET request."""
+        if params:
+            params = normalize_query_params(params)
         return await self.request("GET", endpoint, params=params, **kwargs)
 
     async def post(

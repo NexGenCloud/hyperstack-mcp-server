@@ -1,9 +1,11 @@
 """Configuration management for Hyperstack MCP Server."""
-
 from enum import StrEnum
 
+from dotenv import load_dotenv
 from pydantic import Field, HttpUrl, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+load_dotenv()
 
 
 class Env(StrEnum):

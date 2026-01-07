@@ -36,6 +36,7 @@ class HyperstackClient(BaseAsyncClient):
         page: int | None = None,
         page_size: int | None = None,
         search: str | None = None,
+        environment: str | None = None,
     ) -> dict[str, Any]:
         """List virtual machines."""
         params: dict[str, Any] = {}
@@ -45,6 +46,8 @@ class HyperstackClient(BaseAsyncClient):
             params["page_size"] = page_size
         if search:
             params["search"] = search
+        if environment:
+            params["environment"] = environment
 
         return await self.get("/core/virtual-machines", params=params)
 
@@ -68,24 +71,32 @@ class HyperstackClient(BaseAsyncClient):
         """Hard reboot a virtual machine."""
         return await self.get(f"/core/virtual-machines/{vm_id}/hard-reboot")
 
-    async def hibernate_vm(self, vm_id: int) -> dict[str, Any]:
+    async def hibernate_vm(self, vm_id: int, retain_ip: bool = False) -> dict[str, Any]:
         """Hibernate a virtual machine."""
-        return await self.get(f"/core/virtual-machines/{vm_id}/hibernate")
+        return await self.get(
+            f"/core/virtual-machines/{vm_id}/hibernate", params={"retain_ip": retain_ip}
+        )
 
     async def restore_vm(self, vm_id: int) -> dict[str, Any]:
         """Restore a hibernated virtual machine."""
         return await self.get(f"/core/virtual-machines/{vm_id}/hibernate-restore")
 
-    async def attach_volume_to_vm(self, vm_id: int, volume_id: int) -> dict[str, Any]:
+    async def attach_volume_to_vm(
+        self, vm_id: int, volume_ids: list[int]
+    ) -> dict[str, Any]:
         """Attach a volume to a virtual machine."""
         return await self.post(
-            f"/core/virtual-machines/{vm_id}/attach-volume/{volume_id}"
+            f"/core/virtual-machines/{vm_id}/attach-volumes",
+            json_data={"volume_ids": volume_ids},
         )
 
-    async def detach_volume_from_vm(self, vm_id: int, volume_id: int) -> dict[str, Any]:
+    async def detach_volume_from_vm(
+        self, vm_id: int, volume_ids: list[int]
+    ) -> dict[str, Any]:
         """Detach a volume from a virtual machine."""
         return await self.post(
-            f"/core/virtual-machines/{vm_id}/detach-volume/{volume_id}"
+            f"/core/virtual-machines/{vm_id}/detach-volumes",
+            json_data={"volume_ids": volume_ids},
         )
 
     async def attach_floating_ip_to_vm(self, vm_id: int) -> dict[str, Any]:
@@ -96,13 +107,13 @@ class HyperstackClient(BaseAsyncClient):
         """Detach a floating IP from a virtual machine."""
         return await self.post(f"/core/virtual-machines/{vm_id}/detach-floatingip")
 
-    async def add_firewall_rule(
-        self, vm_id: int, rule_data: dict[str, Any]
-    ) -> dict[str, Any]:
+    async def add_firewall_rule(self, payload: dict[str, Any]) -> dict[str, Any]:
         """Add a firewall rule to a virtual machine."""
+        vm_id = payload.pop("vm_id")
+        security_rules = payload["security_rule"]
         return await self.post(
             f"/core/virtual-machines/{vm_id}/sg-rules",
-            json_data=rule_data,
+            json_data=security_rules,
         )
 
     async def remove_firewall_rule(self, vm_id: int, rule_id: int) -> dict[str, Any]:
@@ -195,9 +206,9 @@ class HyperstackClient(BaseAsyncClient):
         return await self.get("/core/stocks")
 
     # Clusters endpoints
-    async def create_cluster(self, **kwargs: Any) -> dict[str, Any]:
+    async def create_cluster(self, payload: dict) -> dict[str, Any]:
         """Create a new cluster."""
-        return await self.post("/core/clusters", json_data=kwargs)
+        return await self.post("/core/clusters", json_data=payload)
 
     async def list_clusters(
         self,
